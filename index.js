@@ -12,16 +12,22 @@ const knex = require('knex');
 const ArrayList=require('ArrayList');
 const csv = require('csv-parser');
 const fs = require('fs');
+const cors= require('cors');
+const bodyParser = require('body-parser');
+
 
 const db = knex({
   client: 'pg',
   connection: {
     host : '127.0.0.1',
-    user : 'postgres',
-    password : 'admin',
+    user : 'abhilash.gj',
+    password : '',
     database : 'ubsproject'
   }
 });
+
+app.use(cors());
+app.use(bodyParser.json());
 
 
 
@@ -124,7 +130,10 @@ const resetPrices=async()=>{
 app.get('/1', async(req, res) => {
 	var result=await frontRunningScenario1();
 	console.log("Front running scenario 1-",result)
-	res.send(result)
+	if(result.length>0)
+		res.send(result)
+	else
+		res.send("No front running detected")
 });
 
 //execution starts here
@@ -146,6 +155,7 @@ const frontRunningScenario1=async()=>{
 //function searches for firm buy trades before client buy
 const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 	var resList=[];
+	var resultInside2
 	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'buy',security:data1.security, brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
 	if(data2.length>0)
 	{
@@ -160,11 +170,11 @@ const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 	{
 		for (let i=0;i<data2.length;i++)
 		{
-			var resultInside2= await frontRunningScenario1Inside2(data1, data2, mainTime1)
-			resList.push(resultInside2)//creating a 2D array of trades involved in frontrunning
+			resultInside2= await frontRunningScenario1Inside2(data1, data2[i], mainTime1)
+			//resList.push(resultInside2)//creating a 2D array of trades involved in frontrunning
 		}
 	}
-	return resList;
+	return resultInside2;
 }
 
 //if firm buys are found for the respective client buy, this function searches for firm sell
@@ -184,9 +194,9 @@ const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 	if(data3.length>0)
 	{
 		for(let i=0;i<data3.length;i++)
-			resList.push(data3[i].tradeid)
-		resList.push(data2[0].tradeid)
-		resList.push(data1.tradeid)
+			resList.push(data3[i])
+		resList.push(data2)
+		resList.push(data1)
 	}
 	return resList;
 
@@ -211,7 +221,10 @@ const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 app.get('/2', async(req, res) => {
 	var result=await frontRunningScenario2();
 	console.log("Front running scenario 2-",result)
-	res.send(result)
+	if(result.length>0)
+		res.send(result)
+	else
+		res.send("No front running detected")
 });
 
 const frontRunningScenario2=async()=>{
@@ -246,9 +259,9 @@ const frontRunningScenario2Inside1=async(data1, mainTime1)=>{
 	{
 		for(let i=0;i<data2.length;i++)
 		{
-			resList.push(data2[i].tradeid)
+			resList.push(data2[i])
 		}
-		resList.push(data1.tradeid)
+		resList.push(data1)
 	}
 	return resList;
 }
@@ -272,7 +285,10 @@ const frontRunningScenario2Inside1=async(data1, mainTime1)=>{
 app.get('/3',async(req,res)=>{
 	var result=await frontRunningScenario3();
 	console.log("Front running scenario 3-",result)
-	res.send(result);
+	if(result.length>0)
+		res.send(result)
+	else
+		res.send("No front running detected")
 })
 
 //structure-
@@ -336,10 +352,10 @@ const frontRunningScenario3Inside2=async(data1,data2,mainTime1,mainTime2)=>{
 	{
 		for(let i=0;i<data3.length;i++)
 		{
-			resList.push(data3[i].tradeid);
+			resList.push(data3[i]);
 		}
-		resList.push(data2.tradeid)
-		resList.push(data1.tradeid)
+		resList.push(data2)
+		resList.push(data1)
 	}
 	return resList;
 }
