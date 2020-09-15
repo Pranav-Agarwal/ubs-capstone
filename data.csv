@@ -1,4 +1,6 @@
-﻿firmclient,tradeid,tradetype,security,quantity,priceperunit,brokername,timestamp
-firm,1,buy,Apple,400,10,B1,3-03
-client,2,buy,Apple,4000,10,B1,3-05
-firm,3,sell,Apple,400,10,B1,3-06
+﻿firmclient,tradeid,tradetype,security,quantity,priceperunit,brokername,timestamp,date
+firm,1,buy,Apple,400,10,B1,12:05:23,2020-09-15
+client,2,buy,Apple,4000,10,B1,12:05:24,2020-09-15
+firm,3,sell,Apple,400,10,B1,12:05:25,2020-09-15
+firm,4,sell,Facebook,400,10,B2,12:05:26,2020-09-15
+client,5,sell,Facebook,5000,10,B2,12:05:27,2020-09-15

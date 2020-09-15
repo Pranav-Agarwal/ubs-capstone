@@ -23,7 +23,7 @@ let csvStream = fastcsv
     });
 
     const query =
-      "INSERT INTO tradelist (firmclient, tradeid, tradetype, security, quantity, priceperunit, brokername, timestamp) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)";
+      "INSERT INTO tradelist (firmclient, tradeid, tradetype, security, quantity, priceperunit, brokername, timestamp ,date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)";
 
     pool.connect((err, client, done) => {
       if (err) throw err;

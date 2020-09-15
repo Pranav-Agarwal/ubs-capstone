@@ -1,6 +1,7 @@
 //create table tradelist (firmclient varchar(30), Tradeid serial primary key, tradetype varchar(10), security varchar(30), quantity integer, priceperunit integer, brokername varchar(10));
 //create table securities (security varchar(30) primary key, price integer);
-//alter table tradelist add column timestamp varchar(20);
+//alter table tradelist add column timestamp time;
+//alter table tradelist add column date date;
 //--sample queries to understand data being processed
 //insert into tradelist values ('firm', default, 'buy', 'Apple', '400', '10', 'B1', '3-03');
 //insert into tradelist values ('client', default, 'buy', 'Apple', '3000', '10', 'B1', '3-05');
@@ -51,7 +52,8 @@ app.post('/insert', (req, res)=> {
     priceperunit: req.body.priceperunit,
     brokername: req.body.brokername,
     timestamp: req.body.timestamp,
-    tradetype: req.body.tradetype
+    tradetype: req.body.tradetype,
+    date: req.body.date
   })
   .then(response=>{
   	console.log("Inserting new row");
