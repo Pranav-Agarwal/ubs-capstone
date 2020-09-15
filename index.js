@@ -11,6 +11,9 @@ const knex = require('knex');
 const ArrayList=require('ArrayList');
 const csv = require('csv-parser');
 const fs = require('fs');
+const cors= require('cors');
+const bodyParser = require('body-parser');
+
 
 const db = knex({
   client: 'pg',
@@ -21,6 +24,9 @@ const db = knex({
     database : 'ubsproject'
   }
 });
+
+app.use(cors());
+app.use(bodyParser.json());
 
 
 
