@@ -146,7 +146,8 @@ const frontRunningScenario1=async()=>{
 		{
 			var mainTime1=await calcTime(data1[i].timestamp);
 			var resultInside1= await frontRunningScenario1Inside1(data1[i], mainTime1);
-			resList.push(resultInside1)
+			if(resultInside1.length>0)
+				resList.push(resultInside1)
 		}
 	}
 	return resList;
@@ -154,7 +155,6 @@ const frontRunningScenario1=async()=>{
 
 //function searches for firm buy trades before client buy
 const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
-	var resList=[];
 	var resultInside2
 	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'buy',security:data1.security, brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
 	if(data2.length>0)
@@ -171,7 +171,6 @@ const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 		for (let i=0;i<data2.length;i++)
 		{
 			resultInside2= await frontRunningScenario1Inside2(data1, data2[i], mainTime1)
-			//resList.push(resultInside2)//creating a 2D array of trades involved in frontrunning
 		}
 	}
 	return resultInside2;
@@ -180,7 +179,7 @@ const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 //if firm buys are found for the respective client buy, this function searches for firm sell
 const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 	var resList=[];
-	var data3= await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'sell',security:data1.security, brokername:data1.brokername}).where('timestamp','>',data1.timestamp)
+	var data3= await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'sell',security:data1.security, brokername:data1.brokername}).where('timestamp','>',data1.timestamp).whereNot({quantity:data1.quantity})
 	if(data3.length>0)
 	{
 		for(let i=0;i<data3.length;i++)
@@ -193,8 +192,11 @@ const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 	//creating a 1D array of trades involved in front running
 	if(data3.length>0)
 	{
+		console.log("in if",data1.tradeid)
 		for(let i=0;i<data3.length;i++)
+		{
 			resList.push(data3[i])
+		}
 		resList.push(data2)
 		resList.push(data1)
 	}
@@ -236,7 +238,8 @@ const frontRunningScenario2=async()=>{
 		{
 			var mainTime1=await calcTime(data1[i].timestamp);
 			var resultInside1=await frontRunningScenario2Inside1(data1[i], mainTime1);
-			resList.push(resultInside1);
+			if(resultInside1.length>0)
+				resList.push(resultInside1)
 		}
 	}
 	return resList;
@@ -306,7 +309,8 @@ const frontRunningScenario3=async()=>{
 		{
 			var mainTime1=await calcTime(data1[i].timestamp);
 			var resultInside1=await frontRunningScenario3Inside1(data1[i],mainTime1);
-			resList.push(resultInside1);
+			if(resultInside1.length>0)
+				resList.push(resultInside1)
 		}
 	}
 	return resList;
