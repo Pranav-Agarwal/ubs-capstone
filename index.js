@@ -20,8 +20,8 @@ const db = knex({
   client: 'pg',
   connection: {
     host : '127.0.0.1',
-    user : 'abhilash.gj',
-    password : '',
+    user : 'postgres',
+    password : 'admin',
     database : 'ubsproject'
   }
 });
@@ -206,19 +206,6 @@ const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 //--------------------------------------------Front running scenario 2--------------------------------------------------------------
 app.get('/2', async(req, res) => {
 	var result=await frontRunningScenario2();
@@ -271,18 +258,6 @@ const frontRunningScenario2Inside1=async(data1, mainTime1)=>{
 
 
 //----------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-
-
-
 
 //--------------------------------------------Front running scenario 3--------------------------------------------------------------
 app.get('/3',async(req,res)=>{
@@ -341,7 +316,7 @@ const frontRunningScenario3Inside1=async(data1,mainTime1)=>{
 
 //function gets all data for firm selling to the client the same quantity of shares and at higher price
 const frontRunningScenario3Inside2=async(data1,data2,mainTime1,mainTime2)=>{
-	 var resList=[];
+	var resList=[];
 	var data3=await db.select('*').from('tradelist').where({'firmclient':'firm',tradetype:'sell',security:data2.security,brokername:data2.brokername,quantity:data2.quantity,'priceperunit':data2.priceperunit}).where('timestamp','>',data1.timestamp)
 	if(data3.length>0)
 	{
@@ -364,6 +339,51 @@ const frontRunningScenario3Inside2=async(data1,data2,mainTime1,mainTime2)=>{
 	return resList;
 }
 //----------------------------------------------------------------------------------------------------------------------------------
+
+//--------------------------------------------Wash Trade Detection--------------------------------------------------------------
+
+app.get('/wash',async(req,res)=>{
+	var result=await washTrade();
+	console.log("Wash Trade-",result)
+	if(result.length>0)
+		res.send(result)
+	else
+		res.send("No wash trades detected")
+})
+
+//structure-
+//firm buys at certain price and quantity
+//client buys same quantity and greater price
+//firm sells to customer at the greater price and same quantity
+
+//function gets all trades where firm buys
+const washTrade=async()=>{
+	var resList=[];
+	var data1=await db.select('*').from('tradelist').where({firmclient:'firm'}).orderBy('timestamp');
+  var time1,time2;
+	if(data1.length>0){
+		for(let i=0;i<data1.length-1;i++){
+      time1 = await calcTime(data1[i].timestamp);
+      var temp = [];
+      for(let j=i;j<data1.length;j++){
+        time2 = await calcTime(data1[j].timestamp);
+        if(time2-time1>60) break;
+        else{
+          if(data1[i].brokername==data1[j].brokername && data1[i].security==data1[j].security && data1[i].quantity==data1[j].quantity && data1[i].tradetype!=data1[j].tradetype){
+            temp.push(data1[i]);
+            temp.push(data1[j]);
+            resList.push(temp);
+            break;
+          }
+        }
+      }
+		}
+	}
+	return resList;
+}
+
+//----------------------------------------------------------------------------------------------------------
+
 
 app.listen(8000, () => {
   console.log('Example app listening on port 8000!')
