@@ -1,0 +1,118 @@
+.title {
+  text-align: center;
+  font-family: arial, sans-serif;
+  color:black
+}
+
+#students {
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border: 3px solid #ddd;
+  width: 100%;
+  height:50px;
+  overflow-y: scroll;
+
+}
+
+
+#students-header {
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border: 3px solid #ddd;
+  width: 100%;
+  height:50px;
+  overflow-y: scroll;
+
+}
+
+#students tbody tr{
+
+  display:table;
+width:100%;
+table-layout:fixed;
+
+}
+
+#students-header tbody tr{
+
+  display:table;
+width:100%;
+table-layout:fixed;
+
+}
+
+
+#students tbody thead{
+
+  display:table;
+width:98.7%;
+table-layout:fixed;
+
+}
+
+#students-header tbody thead{
+
+  display:table;
+width:98.7%;
+table-layout:fixed;
+
+}
+
+#students td, #students th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#students-header td, #students-header th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#students tbody{
+  display:block;
+height:500px;
+overflow-y:scroll;
+}
+
+
+
+#students tr:nth-child(even){background-color: #f2f2f2;}
+
+#students tr:hover {background-color: #ddd;}
+
+#students-header tr:nth-child(even){background-color: #f2f2f2;}
+
+#students-header tr:hover {background-color: #ddd;}
+
+
+#students th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: grey;
+  color: white;
+  position: sticky;
+  top:0;
+
+  }
+
+  
+#students-header th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: grey;
+  color: white;
+  position: sticky;
+  top:0;
+
+  }
+
+#parent{
+ overflow-y: scroll;
+
+  padding:170px;
+}
+
