@@ -24,50 +24,42 @@ export default class App extends Component {
       visible_1:false,
       visible_2:false,
       visible_3:false,
-      scenario1_data:[],
-      scenario2_data:[],
-      scenario3_data:[],
-      database:[],
+      scenario1_data:'',
+      scenario2_data:'',
+      scenario3_data:'',
+      database:'',
     }  
   }
 
-  async componentDidMount(){
-    
-      const url="http://localhost:8000/1";
-      const response=await fetch(url);
-      const data= await response.json();
-      this.setState({
-        scenario1_data: data  
-      },()=> {
-         console.log(this.state.scenario1_data[0][0]); 
-      });
+  componentDidMount(){
 
-      const url_2="http://localhost:8000/2";
-      const response_2=await fetch(url_2);
-      const data_2= await response_2.json();
-      this.setState({
-        scenario2_data: data_2  
-      },()=> {
-         console.log(this.state.scenario2_data[0][0]); 
-      });
+      fetch('http://localhost:8000/1')
+        .then(response=>response.json())
+        .then(response=>{
+          this.setState({scenario1_data:response})
+          console.log("response", response);
+        })
+
+      fetch('http://localhost:8000/2')
+        .then(response=>response.json())
+        .then(response=>{
+          this.setState({scenario2_data:response})
+          console.log("response", response);
+        })
       
-      const url_3="http://localhost:8000/3";
-      const response_3=await fetch(url_3);
-      const data_3= await response_3.json();
-      this.setState({
-        scenario3_data: data_3  
-      },()=> {
-         
-      });
-      
-      const url_table="http://localhost:8000/getall";
-      const response_table=await fetch(url_table);
-      const data_main= await response_table.json();
-      this.setState({
-        database: data_main  
-      },()=> {
-        console.log(this.state.database[0]); 
-      });
+      fetch('http://localhost:8000/3')
+        .then(response=>response.json())
+        .then(response=>{
+          this.setState({scenario3_data:response})
+          console.log("response", response);
+        })
+
+      fetch('http://localhost:8000/getall')
+        .then(response=>response.json())
+        .then(response=>{
+          this.setState({database:response})
+          console.log("response", response);
+        })
       
 
   }
@@ -115,6 +107,7 @@ export default class App extends Component {
   }
   render()
   {
+    console.log(this.state.scenario1_data)
     
   return (
     <div className="App">

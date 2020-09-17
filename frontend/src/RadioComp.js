@@ -31,6 +31,8 @@ class RadioComp extends React.Component{
 
       }
   }
+
+
   
   handleradiochange = (e) => {
     this.setState({
@@ -146,7 +148,7 @@ class RadioComp extends React.Component{
     <div>
     <RadioGroup  onChange={this.handleradiochange}>
       <FormControlLabel value="firm" control={<Radio />} label="Firm" />
-      <FormControlLabel value="customer" control={<Radio />} label="Customer" />
+      <FormControlLabel value="client" control={<Radio />} label="Customer" />
     </RadioGroup>
     </div>
 <br/>

@@ -3,11 +3,17 @@ import React,{Component} from 'react';
 import { red } from '../node_modules/@material-ui/core/colors';
 import './components/myScenario1.css'
 
-class TableComp extends Component{
+class TableComp extends React.Component{
 
     constructor(props){
         super(props);
 
+    }
+
+
+    componentDidMount()
+    {
+      
     }
 
 

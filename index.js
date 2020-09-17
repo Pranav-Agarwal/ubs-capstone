@@ -20,8 +20,8 @@ const db = knex({
   client: 'pg',
   connection: {
     host : '127.0.0.1',
-    user : 'postgres',
-    password : 'admin',
+    user : 'abhilash.gj',
+    password : '',
     database : 'ubsproject'
   }
 });
@@ -43,7 +43,7 @@ function calcTime(data){
 //--------------------------------------------General APIs--------------------------------------------------------------
 
 app.get('/getall', (req, res)=> {
-	db.select('*').from('tradelist')
+	db.select('*').from('tradelist').orderBy('timestamp')
 	.then(data=>{
 			console.log(data);
 			res.send(data);
@@ -63,6 +63,7 @@ app.post('/insert', (req, res)=> {
   })
   .then(response=>{
   	console.log("Inserting new row");
+  	var result = updatePrices();
   	res.json(response);
   })
 	.catch(err=>res.status(400).json('error getting data'))
@@ -139,7 +140,7 @@ app.get('/1', async(req, res) => {
 //execution starts here
 const frontRunningScenario1=async()=>{
 	var resList=[];
-	var data1= await db.select('*').from('tradelist').where({firmclient:'client',tradetype:'buy'}).where('quantity','>',1000)
+	var data1= await db.select('*').from('tradelist').where({firmclient:'client',tradetype:'Buy'}).where('quantity','>',1000)
 	if(data1.length>0)
 	{
 		for(let i=0;i<data1.length;i++)
@@ -156,7 +157,7 @@ const frontRunningScenario1=async()=>{
 //function searches for firm buy trades before client buy
 const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 	var resultInside2
-	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'buy',security:data1.security, brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
+	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'Buy',security:data1.security, brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
 	if(data2.length>0)
 	{
 		for(let i=0;i<data2.length;i++)
@@ -179,7 +180,7 @@ const frontRunningScenario1Inside1=async(data1, mainTime1)=>{
 //if firm buys are found for the respective client buy, this function searches for firm sell
 const frontRunningScenario1Inside2=async(data1,data2,mainTime1)=>{
 	var resList=[];
-	var data3= await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'sell',security:data1.security, brokername:data1.brokername}).where('timestamp','>',data1.timestamp).whereNot({quantity:data1.quantity})
+	var data3= await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'Sell',security:data1.security, brokername:data1.brokername}).where('timestamp','>',data1.timestamp).whereNot({quantity:data1.quantity})
 	if(data3.length>0)
 	{
 		for(let i=0;i<data3.length;i++)
@@ -218,7 +219,7 @@ app.get('/2', async(req, res) => {
 
 const frontRunningScenario2=async()=>{
 	var resList=[];
-	var data1=await db.select('*').from('tradelist').where({firmclient:'client', tradetype:'sell'}).where('quantity','>',1000)
+	var data1=await db.select('*').from('tradelist').where({firmclient:'client', tradetype:'Sell'}).where('quantity','>',1000)
 	if(data1.length>0)
 	{
 		for(let i=0;i<data1.length;i++)
@@ -235,7 +236,7 @@ const frontRunningScenario2=async()=>{
 
 const frontRunningScenario2Inside1=async(data1, mainTime1)=>{
 	var resList=[];
-	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'sell',security:data1.security,brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
+	var data2=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'Sell',security:data1.security,brokername:data1.brokername}).where('timestamp','<',data1.timestamp)
 	if(data2.length>0)
 	{
 		for(let i=0;i<data2.length;i++)
@@ -277,7 +278,7 @@ app.get('/3',async(req,res)=>{
 //function gets all trades where firm buys
 const frontRunningScenario3=async()=>{
 	var resList=[];
-	var data1=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'buy'}).where('quantity','>','1000')
+	var data1=await db.select('*').from('tradelist').where({firmclient:'firm',tradetype:'Buy'}).where('quantity','>','1000')
 	if(data1.length>0)
 	{
 		for(let i=0;i<data1.length;i++)
@@ -294,7 +295,7 @@ const frontRunningScenario3=async()=>{
 //function gets trades of client buying at higher price after firm buys
 const frontRunningScenario3Inside1=async(data1,mainTime1)=>{
 	var resultInside2;
-	var data2=await db.select('*').from('tradelist').where({firmclient:'client',tradetype:'buy',security:data1.security,brokername:data1.brokername,quantity:data1.quantity}).where('priceperunit','>',data1.priceperunit).where('timestamp','>',data1.timestamp)
+	var data2=await db.select('*').from('tradelist').where({firmclient:'client',tradetype:'Buy',security:data1.security,brokername:data1.brokername,quantity:data1.quantity}).where('priceperunit','>',data1.priceperunit).where('timestamp','>',data1.timestamp)
 	if(data2.length>0)
 	{
 		for(let i=0;i<data2.length;i++)
@@ -317,7 +318,7 @@ const frontRunningScenario3Inside1=async(data1,mainTime1)=>{
 //function gets all data for firm selling to the client the same quantity of shares and at higher price
 const frontRunningScenario3Inside2=async(data1,data2,mainTime1,mainTime2)=>{
 	var resList=[];
-	var data3=await db.select('*').from('tradelist').where({'firmclient':'firm',tradetype:'sell',security:data2.security,brokername:data2.brokername,quantity:data2.quantity,'priceperunit':data2.priceperunit}).where('timestamp','>',data1.timestamp)
+	var data3=await db.select('*').from('tradelist').where({'firmclient':'firm',tradetype:'Sell',security:data2.security,brokername:data2.brokername,quantity:data2.quantity,'priceperunit':data2.priceperunit}).where('timestamp','>',data1.timestamp)
 	if(data3.length>0)
 	{
 		for(let i=0;i<data3.length;i++)
