@@ -55,16 +55,18 @@ app.post('/insert', (req, res)=> {
     firmclient: req.body.firmclient,
     security: req.body.security,
     quantity: req.body.quantity,
-    priceperunit: req.body.priceperunit,
+    priceperunit: 100,
     brokername: req.body.brokername,
     timestamp: req.body.timestamp,
     tradetype: req.body.tradetype,
     date: req.body.date
   })
   .then(response=>{
-  	console.log("Inserting new row");
-  	var result = updatePrices();
-  	res.json(response);
+  	console.log("Inserting new row")
+    var result = resetPrices().then(() => {
+      var result1 = updatePrices();
+    })
+  	res.json(response)
   })
 	.catch(err=>res.status(400).json('error getting data'))
 })
@@ -77,6 +79,10 @@ app.get('/clear', (req, res)=> {
 	})
   .catch(err=>res.status(400).json(err))
 })
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 
 //--------------------------------------------Import Dummy Data--------------------------------------------------------------
@@ -96,21 +102,22 @@ app.get('/updatePrices', (req, res)=> {
 
 app.get('/resetPrices', (req, res)=> {
   var result = resetPrices();
-	console.log("Resetting prices. Uber - 100, Facebook - 50, Apple - 250");
-  res.send("Resetting prices. Uber - 100, Facebook - 50, Apple - 250");
+	console.log("Resetting prices. Uber - 100, Facebook - 50, Apple - 250, Walmart - 350");
+  res.send("Resetting prices. Uber - 100, Facebook - 50, Apple - 250, Walmart - 350");
   res.send(result);
 })
 
 const updatePrices=async()=>{
+  console.log("Updating Prices");
 	var data= await db.select('*').from('tradelist').orderBy('timestamp');
 	for(let i=0;i<data.length;i++){
     var sec= await db.select('*').from('securities').where({security: data[i].security}).first();
     console.log(sec.price);
 		var result = await db.select('*').from('tradelist').where({ tradeid: data[i].tradeid }).update({ priceperunit: sec.price });
-    if(data[i].quantity>1000 && data[i].tradetype=='buy'){
+    if(data[i].quantity>1000 && data[i].tradetype=='Buy'){
       var result1 = await db.select('*').from('securities').where({security: data[i].security}).update({ price: Math.round(sec.price*1.1)});
     }
-    if(data[i].quantity>1000 && data[i].tradetype=='sell'){
+    if(data[i].quantity>1000 && data[i].tradetype=='Sell'){
       var result1 = await db.select('*').from('securities').where({security: data[i].security}).update({ price: Math.round(sec.price*0.9)});
     }
 	}
@@ -118,10 +125,12 @@ const updatePrices=async()=>{
 }
 
 const resetPrices=async()=>{
-  var securities = [['Uber',100],['Facebook',50],['Apple',250]];
+  console.log("Restting Prices");
+  var securities = [['Uber',100],['Facebook',50],['Apple',250],['Walmart',350]];
   for (var i =0;i<securities.length;i++){
     var result1 = await db.select('*').from('securities').where({security: securities[i][0]}).update({ price: securities[i][1]});
   }
+  console.log("Restting Prices done");
   return
 }
 

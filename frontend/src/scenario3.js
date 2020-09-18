@@ -41,6 +41,7 @@ renderTableData_2() {
             for(var j=0;j<this.props.data_table_3[i].length;j++)
      
             {
+                var truncDate=this.props.data_table_3[i][j].date.substring(0,10);
                  ar.push(<tr key={this.props.data_table_3[i][j].tradeid}>
                      <td>{this.props.data_table_3[i][j].firmclient}</td>
                      <td>{this.props.data_table_3[i][j].tradeid}</td>
@@ -50,7 +51,7 @@ renderTableData_2() {
                      <td>{this.props.data_table_3[i][j].priceperunit}</td>
                      <td>{this.props.data_table_3[i][j].brokername}</td>
                      <td>{this.props.data_table_3[i][j].timestamp}</td>
-                     <td>{this.props.data_table_3[i][j].date}</td>
+                     <td>{truncDate}</td>
                      
                   </tr>
                   )
@@ -82,7 +83,7 @@ renderTableData_2() {
 render(){
     return(        
      <div id='parent'> 
-        <h1 className="title">Scenario 3 Trades</h1>
+        <h1 className="title">Front Running Scenario 3</h1>
         <table id='students'>
            <tbody>
               <tr>{this.renderTableHeader()}</tr>

@@ -22,6 +22,7 @@ renderTableData_2() {
    var ar=[];
    for(var i=0;i<this.props.table_database.length;i++)
    {
+            var truncDate=this.props.table_database[i].date.substring(0,10);
             ar.push(<tr key={this.props.table_database[i].tradeid}>
                 <td>{this.props.table_database[i].firmclient}</td>
                 <td>{this.props.table_database[i].tradeid}</td>
@@ -31,10 +32,11 @@ renderTableData_2() {
                 <td>{this.props.table_database[i].priceperunit}</td>
                 <td>{this.props.table_database[i].brokername}</td>
                 <td>{this.props.table_database[i].timestamp}</td>
-                <td>{this.props.table_database[i].date}</td>
+                <td>{truncDate}</td>
                 
              </tr>
              )
+            console.log("o-oojnkjsfnlkdsnflk",this.props.table_database[i].date)
 
        
        ar.push(<br/>)

@@ -47,3 +47,32 @@
     transform: rotate(360deg);
   }
 }
+
+.appContentParent
+{
+  margin-top: -10%;
+}
+
+.scenarioTableParent
+{
+  margin-top: -20%;
+  border-radius: 20px;
+}
+
+.radioCompParent
+{
+  margin-top: 10%;
+}
+
+.button1
+{
+  border-radius: 5px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin: 10px;
+  height: 38px;
+  border: 2px solid rgb(209,0,47);
+  background-color: rgb(209,0,47);
+  font-size: 17px;
+  color: white;
+}

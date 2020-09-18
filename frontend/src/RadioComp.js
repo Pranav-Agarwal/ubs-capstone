@@ -68,7 +68,7 @@ class RadioComp extends React.Component{
     })
         .then(response => response.json())
         .then(data => console.log("Inserting"));
-    alert(''+this.state.radio_value + '  ' + this.state.stock + '  ' + this.state.price + '  ' + this.state.share + '  ' + this.state.action )
+    alert("Trade succesfully inserted");
   }
 
   handleactionchange = (e) =>{
@@ -130,8 +130,7 @@ class RadioComp extends React.Component{
    var timeAr = this.state.tradetime.toString().split(":");
    console.log(timeAr);
    var enabled= this.state.share>0 && this.state.share<20000 
-   && this.state.share.length>0 && this.state.price.length>0 
-   && this.state.price > 0 && 
+   && this.state.share.length>0 && 
    (timeAr[0] >= 10 && timeAr[0] <=24 && timeAr[1] >= 0 && timeAr[1] <=60 && timeAr[2] >= 0 && timeAr[2] <=60)
    && this.state.radio_value.length >0 && this.state.broker.length>0 && this.state.dated.length>0 && this.state.action.length>0 ; 
 
@@ -173,6 +172,8 @@ class RadioComp extends React.Component{
     <RadioGroup  onChange={this.handlestockchange}>
       <FormControlLabel value="Apple" control={<Radio />} label="Apple" />
       <FormControlLabel value="Facebook" control={<Radio />} label="Facebook" />
+      <FormControlLabel value="Uber" control={<Radio />} label="Uber" />
+      <FormControlLabel value="Walmart" control={<Radio />} label="Walmart" />
     </RadioGroup>
     </div>
     <div><br/></div>
@@ -184,13 +185,6 @@ class RadioComp extends React.Component{
     </div>
 
     <br/>
-    <div>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label className="labelclass">Current Price </label>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <input type="text"
-     onChange={this.handlechangeprice}
-     placeholder = "********/-"
-    />
-    </div>
     <br/>
     
     <div>
@@ -224,8 +218,8 @@ class RadioComp extends React.Component{
     </div>
     
     </div>
-    <div className="submit">
-    <button disabled={!enabled} onClick={this.onsubmitchange} type="submit"> Submit </button>   
+    <div className="submit">  
+    <button disabled={!enabled} onClick={this.onsubmitchange} type="submit" className="button1">Enter trade</button>
 </div>
     </form>
 </div>
